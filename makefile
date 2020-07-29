@@ -26,6 +26,9 @@ CFILES += $(CURDIR)/Platform/demo/hal/demo_hal.c
 CFILES += $(CURDIR)/Platform/demo/demo.c
 CFILES += $(CURDIR)/Services/service_utilities.c
 CFILES += $(CURDIR)/Services/time_management_service.c
+CFILES += $(CURDIR)/Services/services.c
+CFILES += $(CURDIR)/Services/housekeeping_service.c
+CFILES += $(CURDIR)/Services/service_response.c
 #-------------------------------------------------------------------------------
 
 #entrypoint
