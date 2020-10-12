@@ -131,7 +131,7 @@
   /* Removing schedules */
   SAT_returnState scheduling_reset_pool();
 
-  SAT_returnState scheduling_remove_element(uint16_t sch_id);
+  SAT_returnState scheduling_remove_element(uint8_t *data);
 
   /* Extracting Schedule packet from TC */
   SC_pkt* find_schedule_pos();
