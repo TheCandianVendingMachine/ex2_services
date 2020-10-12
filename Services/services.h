@@ -42,6 +42,7 @@
 #define MAX_SUBTYPES 256  // an 8-bit integer
 
 #define MAX_PKT_LEN 210 // TODO: What is our max packet length?
+#define MAX_PKT_SIZE (MAX_PKT_LEN * 1) // TODO: what is our packet type?
 
 typedef enum {
   OBC_APP_ID = _OBC_APP_ID_,
@@ -81,7 +82,6 @@ typedef enum {
 #define TC_HOUSEKEEPING_SERVICE 9
 #define TC_EVENT_SERVICE 10
 #define TC_FUNCTION_MANAGEMENT_SERVICE 11
-#define TC_TIME_MANAGEMENT_SERVICE 12
 #define TC_SCHEDULING_SERVICE 13
 typedef enum { TM_HK_PARAMETERS_REPORT = 0 } Housekeeping_Subtype;
 

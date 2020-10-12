@@ -13,7 +13,7 @@
  */
  /**
   * @file scheduling_service.h
-  * @author upSat, Thomas Ganley
+  * @author upSat, Thomas Ganley, Brandon Danyluk
   * @date 2020-07-14
   */
 
@@ -40,12 +40,12 @@
           /* Identifies a schedule packet so that it can be
           *  referenced elsewhere.
           */
-      uint16_t sch_id
+      uint16_t sch_id;
 
           /* = 1 if schedule packet is enabled
              = 0 if schedule packet is not enabled
             */
-      uint8_t enabled
+      uint8_t enabled;
 
           /* Determines the release type for the telecommand.
            * See: SC_event_time_type
@@ -59,7 +59,7 @@
 
           /* The actual telecommand packet to be scheduled and executed
            */
-      csp_packet_t tc_pck;
+      csp_packet_t *tc_pck;
 
           /* Declares a schedule position as pos_taken or !pos_taken.
            * If a schedule position is noted as !pos_taken, it can be replaced

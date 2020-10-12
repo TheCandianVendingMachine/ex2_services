@@ -13,13 +13,13 @@
  */
  /**
   * @file scheduling_service.h
-  * @author UpSat, Thomas Ganley
+  * @author UpSat, Thomas Ganley, Brandon Danyluk
   * @date 2020-07-14
   */
 
   #include "scheduling_service.h"
 
-  uint8_t sche_tc_buffer[MAX_PKT_LEN+14+1] // Arbitrary size
+  uint8_t sche_tc_buffer[MAX_PKT_LEN+14+1]; // Arbitrary size
   Scheduling_service_state sc_s_state;
   Schedule_pkt_pool sch_mem_pool;
 
@@ -41,7 +41,10 @@
 
       // Allocate inner TC memory and mark positions as empty
       for(uint8_t s=0;s<SC_MAX_STORED_SCHEDULES;s++){
-          sch_mem_pool.sc_mem_array[s].tc_pck.data = sch_mem_pool.innerd_tc_data[s];
+          sch_mem_pool.sc_mem_array[s].tc_pck = csp_buffer_get(MAX_PKT_SIZE);
+          if (sch_mem_pool.sc_mem_array[s].tc_pck == NULL) {
+            return SATR_BUFFER_ERR;
+          }
           sch_mem_pool.sc_mem_array[s].pos_taken = false;
       }
 
@@ -102,15 +105,15 @@
               exec_state = scheduling_time_shift_all(tc_tm_packet->data);
               break;
           case SCHS_REPORT_SCH_DETAILED:
-              csp_packet_t *sch_rep_d_pkt = get_pkt(PKT_NORMAL);
+              /*csp_packet_t *sch_rep_d_pkt = get_pkt(PKT_NORMAL);
               exec_state = scheduling_service_report_detailed(sch_rep_d_pkt,
                            (TC_TM_app_id)tc_tm_packet->dest_id, tc_tm_packet->data[0], tc_tm_packet->data[1]);
-              route_pkt(sch_rep_d_pkt);
+              route_pkt(sch_rep_d_pkt);*/
               break;
           case SCHS_REPORT_SCH_SUMMARY:
-              csp_packet_t *sch_rep_s_pkt = get_pkt(PKT_NORMAL);
+              /*csp_packet_t *sch_rep_s_pkt = get_pkt(PKT_NORMAL);
               exec_state = scheduling_service_report_summary(sch_rep_s_pkt, (TC_TM_app_id)tc_tm_packet->dest_id);
-              route_pkt(sch_rep_s_pkt);
+              route_pkt(sch_rep_s_pkt);*/
               break;
           case SCHS_LOAD_SCHEDULES: /*Load TCs from permanent storage*/
               exec_state = scheduling_service_load_schedules();
