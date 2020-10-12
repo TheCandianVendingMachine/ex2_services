@@ -146,7 +146,8 @@
 
                 uint32_t time = get_time();
                 if(sch_mem_pool.sc_mem_array[i].release_time <= time){
-                route_pkt(&(sch_mem_pool.sc_mem_array[i].tc_pck));
+                    // todo: replace route_pkt
+                //route_pkt(&(sch_mem_pool.sc_mem_array[i].tc_pck));
                 sch_mem_pool.sc_mem_array[i].pos_taken = false;
                 sc_s_state.nmbr_of_ld_sched--;
                 sc_s_state.sch_arr_full = false;
@@ -186,7 +187,7 @@
       sch_mem_pool.sc_mem_array[posit].tc_pck->length = theSchpck.tc_pck->length;
       sch_mem_pool.sc_mem_array[posit].tc_pck->id = theSchpck.tc_pck->id;
 
-      for( ;i<theSchpck.tc_pck->len;i++){
+      for( ;i<theSchpck.tc_pck->length;i++){
           sch_mem_pool.sc_mem_array[posit].tc_pck->data[i] = theSchpck.tc_pck->data[i];
       }
       sc_s_state.nmbr_of_ld_sched++;
