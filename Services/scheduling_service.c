@@ -22,6 +22,9 @@
   uint8_t sche_tc_buffer[MAX_PKT_LEN+14+1]; // Arbitrary size
   Scheduling_service_state sc_s_state;
   Schedule_pkt_pool sch_mem_pool;
+  
+  // C_ASSERT is undefined right now, in upsat it does stack tracing and whatnot -- leaving it for now
+  #define C_ASSERT(e) (e)
 
   // TODO: replace these externs with our corresponding functions
   // extern void wdg_reset_SCH();
