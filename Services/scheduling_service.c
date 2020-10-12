@@ -181,11 +181,11 @@
       sch_mem_pool.sc_mem_array[posit].pos_taken = theSchpck.pos_taken;
 
       uint8_t i=0;
-      sch_mem_pool.sc_mem_array[posit].tc_pck.length = theSchpck.tc_pck.length;
-      sch_mem_pool.sc_mem_array[posit].tc_pck.id = theSchpck.tc_pck.id;
+      sch_mem_pool.sc_mem_array[posit].tc_pck->length = theSchpck.tc_pck->length;
+      sch_mem_pool.sc_mem_array[posit].tc_pck->id = theSchpck.tc_pck->id;
 
-      for( ;i<theSchpck.tc_pck.len;i++){
-          sch_mem_pool.sc_mem_array[posit].tc_pck.data[i] = theSchpck.tc_pck.data[i];
+      for( ;i<theSchpck.tc_pck->len;i++){
+          sch_mem_pool.sc_mem_array[posit].tc_pck->data[i] = theSchpck.tc_pck->data[i];
       }
       sc_s_state.nmbr_of_ld_sched++;
       if(find_schedule_pos() == NULL){sc_s_state.sch_arr_full = true;}
@@ -522,12 +522,12 @@
               base+=1;
               cnv32_8(sch_mem_pool.sc_mem_array[i].release_time, &pkt->data[base]);
               base+=4;
-              cnv16_8(sch_mem_pool.sc_mem_array[i].tc_pck.length, &pkt->data[base]);
+              cnv16_8(sch_mem_pool.sc_mem_array[i].tc_pck->length, &pkt->data[base]);
               base+=2;
-              cnv32_8(sch_mem_pool.sc_mem_array[i].tc_pck.id, &pkt->data[base]);
+              cnv32_8(sch_mem_pool.sc_mem_array[i].tc_pck->id, &pkt->data[base]);
               base+=4;
-              for(uint16_t p=0;p<sch_mem_pool.sc_mem_array[i].tc_pck.len;p++){
-                  pkt->data[base] = sch_mem_pool.sc_mem_array[i].tc_pck.data[p];
+              for(uint16_t p=0;p<sch_mem_pool.sc_mem_array[i].tc_pck->len;p++){
+                  pkt->data[base] = sch_mem_pool.sc_mem_array[i].tc_pck->data[p];
                   base+=1;
               }
               base+=1;
@@ -580,7 +580,7 @@
               memset(sche_tc_buffer,0x00,MAX_PKT_LEN+14+1);
               uint16_t f_s=0;
               /*save the tc's data length in the first 2 bytes*/
-              cnv16_8(sch_mem_pool.sc_mem_array[s].tc_pck.length, &sche_tc_buffer[f_s]);
+              cnv16_8(sch_mem_pool.sc_mem_array[s].tc_pck->length, &sche_tc_buffer[f_s]);
               f_s+=2;
               /*start saving sch packet*/
               cnv16_8(sch_mem_pool.sc_mem_array[s].sch_id, &sche_tc_buffer[f_s]);
@@ -592,12 +592,12 @@
               cnv32_8(sch_mem_pool.sc_mem_array[s].release_time,&sche_tc_buffer[f_s]); //11
               f_s+=4;
               /*TC parsing begins here*/
-              cnv32_8(sch_mem_pool.sc_mem_array[s].tc_pck.id, sche_tc_buffer[f_s]);
+              cnv32_8(sch_mem_pool.sc_mem_array[s].tc_pck->id, sche_tc_buffer[f_s]);
               f_s+=4;
               /*copy tc payload data*/
               uint16_t i = 0;
-              for(;i<sch_mem_pool.sc_mem_array[s].tc_pck.length;i++){
-                  sche_tc_buffer[f_s] = sch_mem_pool.sc_mem_array[s].tc_pck.data[i];
+              for(;i<sch_mem_pool.sc_mem_array[s].tc_pck->length;i++){
+                  sche_tc_buffer[f_s] = sch_mem_pool.sc_mem_array[s].tc_pck->data[i];
                   f_s+=1;
               }
               uint8_t chk = 0;
@@ -639,9 +639,9 @@
 
             uint8_t temp[2] = {0};
             if(read(filedesc, temp, 2) < 0){return SATR_ERROR;}
-            cnv8_16(temp, &sch_mem_pool.sc_mem_array[s].tc_pck.length);
+            cnv8_16(temp, &sch_mem_pool.sc_mem_array[s].tc_pck->length);
 
-            if(read(filedesc, sche_tc_buffer, &sch_mem_pool.sc_mem_array[s].tc_pck.length + 12) < 0){
+            if(read(filedesc, sche_tc_buffer, &sch_mem_pool.sc_mem_array[s].tc_pck->length + 12) < 0){
               return SATR_ERROR;
             }else{
               state = SATR_OK;
@@ -659,12 +659,12 @@
                 cnv8_32(&sche_tc_buffer[f_s], &sch_mem_pool.sc_mem_array[s].release_time);
                 f_s+=4;
                 /*TC parsing begins here*/
-                cnv8_32(&sche_tc_buffer[f_s], &sch_mem_pool.sc_mem_array[s].tc_pck.id);
+                cnv8_32(&sche_tc_buffer[f_s], &sch_mem_pool.sc_mem_array[s].tc_pck->id);
                 f_s+=4;
                 /*copy tc payload data*/
                 uint16_t i = 0;
-                for(;i<sch_mem_pool.sc_mem_array[s].tc_pck.length;i++){
-                    sch_mem_pool.sc_mem_array[s].tc_pck.data[i] = sche_tc_buffer[f_s];
+                for(;i<sch_mem_pool.sc_mem_array[s].tc_pck->length;i++){
+                    sch_mem_pool.sc_mem_array[s].tc_pck->data[i] = sche_tc_buffer[f_s];
                     f_s+=1;
                 }
                 uint8_t l_chk = sche_tc_buffer[f_s];
