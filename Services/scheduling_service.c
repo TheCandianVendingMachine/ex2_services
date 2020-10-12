@@ -126,7 +126,6 @@
               break;
       }
 
-      tc_tm_packet->verification_state = exec_state;
       return exec_state;
   }
 
