@@ -63,6 +63,7 @@ typedef enum {
   SATR_BUFFER_ERR,
   SATR_SCHS_FULL,
   SATR_SCHS_INTRL_LGC_ERR,
+  SATR_SCHS_RLS_TT_ID_INVLD,
   /*LAST*/
   SATR_LAST
 } SAT_returnState;

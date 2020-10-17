@@ -31,7 +31,8 @@
 
   typedef enum {
     RELATIVE = 0, // Time is relative to when schedule is added to pool
-    ABSOLUTE = 1 // Time is an absolute Unix timestamp
+    ABSOLUTE = 1, // Time is an absolute Unix timestamp
+    LAST_EVENTTIME // Count of enum
   }SC_event_time_type;
 
   // TODO: Make pos_taken part of the packet pool instead of the packet

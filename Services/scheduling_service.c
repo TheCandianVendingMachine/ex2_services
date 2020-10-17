@@ -185,7 +185,9 @@
 
       uint8_t i=0;
       sch_mem_pool.sc_mem_array[posit].tc_pck->length = theSchpck.tc_pck->length;
-      sch_mem_pool.sc_mem_array[posit].tc_pck->id = theSchpck.tc_pck->id;
+      // csp_id_t is a union and the first member is uint32_t ext so this is copying the bits correctly.
+      sch_mem_pool.sc_mem_array[posit].tc_pck->id.ext = theSchpck.tc_pck->id.ext;
+      //sch_mem_pool.sc_mem_array[posit].tc_pck->id = theSchpck.tc_pck->id;
 
       for( ;i<theSchpck.tc_pck->length;i++){
           sch_mem_pool.sc_mem_array[posit].tc_pck->data[i] = theSchpck.tc_pck->data[i];
@@ -228,7 +230,7 @@
     */
   SAT_returnState scheduling_remove_element(uint8_t * data){
 
-      uint16 id = 0;
+      uint16_t id = 0;
       id = (*(data+1) | id) << 8;
       id = *(data+2) | id;
 
@@ -299,7 +301,7 @@
       time = (time | tc_pkt->data[4]);
 
       // Relative and repetitive times convert to unix timestamps
-      switch((*sc_pck).sch_evt){
+      switch(sc_pkt->sch_evt){
         case RELATIVE:
           time += get_time();
       }
@@ -312,7 +314,7 @@
       /*  tc_pkt is a TC containing 8 bytes of data related to scheduling service.
        *  After those 8 bytes, a 'whole_inner_tc' packet starts.
        */
-      return scheduling_copy_inner_tc( &(tc_pkt->data[8]), &((*sc_pkt).tc_pck), (uint16_t) tc_pkt->len - 8);
+      return scheduling_copy_inner_tc( &(tc_pkt->data[8]), sc_pkt->tc_pck, (uint16_t) tc_pkt->length - 8);
   }
 
    /**
@@ -344,9 +346,7 @@
       //checkSum(buf, size-2, &tmp_crc[1]); /* -2 for excluding the checksum bytes*/
 
       cnv8_16((uint8_t*)&buf[0], &pkt->length);
-      cnv8_32((uint8_t*)&buf[2], &pkt->id);
-
-      }
+      cnv8_32((uint8_t*)&buf[2], &pkt->id.ext);
 
       for(int i = 0; i < pkt->length; i++) {
           pkt->data[i] = buf[6+i];
@@ -399,9 +399,8 @@
                       }
                       break;
                   }
-              }
-          }
-      }
+            }
+        }
       return SATR_OK;
   }
 
