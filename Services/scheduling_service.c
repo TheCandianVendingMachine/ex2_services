@@ -355,6 +355,50 @@
       return SATR_OK;
   }
 
+    /**
+    * @brief
+    * 		Time shift all currently active schedules
+    * @details
+    * 		Add/subtract the execution time
+    *     TODO: Fix get_time()
+    * @param time_v
+    * 		Pointer to time value to be added/subtracted
+    * @return
+    * 		The execution state
+    */
+    SAT_returnState time_shift_packet_at_position(int pos, uint32_t time_now, uint32_t ushift_time) {
+        switch(sch_mem_pool.sc_mem_array[pos].sch_evt){
+            case RELATIVE:
+            case ABSOLUTE:
+            {
+                uint32_t rele_time = sch_mem_pool.sc_mem_array[pos].release_time;
+                uint8_t neg = (ushift_time >> 31) & 0x1;
+                uint32_t shift_time_val = (~ushift_time)+ 1;
+                uint32_t new_release_t = 0;
+                if(neg){ /*then subtract it from release time*/
+                    if(shift_time_val >= rele_time){ /*subtraction not possible, erroneous state*/
+                        return SATR_ERROR;
+                    }
+                    new_release_t = rele_time - shift_time_val;
+                    if((new_release_t < time_now)){
+                        return SATR_ERROR;
+                    }
+                    sch_mem_pool.sc_mem_array[pos].release_time = new_release_t;
+                    return SATR_OK;
+                }
+                /*then add it to release time*/
+                new_release_t = rele_time + ushift_time;
+                if( new_release_t <= MAX_RELEASE_TIME ){ /*too far to execute, we will not exist until then*/
+                    sch_mem_pool.sc_mem_array[pos].release_time = new_release_t;
+                    return SATR_OK;
+                }
+                return SATR_ERROR;
+                break;
+            }
+        }
+        return SATR_ERROR;
+    }
+
    /**
     * @brief
     * 		Time shift all currently active schedules
@@ -369,37 +413,12 @@
   SAT_returnState scheduling_time_shift_all(uint8_t *time_v){
 
       uint32_t ushift_time = 0;
-      uint32_t time_now = get_time()
+      uint32_t time_now = get_time();
       cnv8_32(time_v+1, &ushift_time);
       for(uint8_t pos = 0; pos < SC_MAX_STORED_SCHEDULES; pos++) {
           if( sch_mem_pool.sc_mem_array[pos].pos_taken == true){
-              switch(sch_mem_pool.sc_mem_array[pos].sch_evt){
-                case RELATIVE:
-                case ABSOLUTE:
-                      uint32_t rele_time = sch_mem_pool.sc_mem_array[pos].release_time;
-                      uint8_t neg = (ushift_time >> 31) & 0x1;
-                      uint32_t shift_time_val = (~ushift_time)+ 1;
-                      uint32_t new_release_t = 0;
-                      if(neg){ /*then subtract it from release time*/
-                          if(shift_time_val >= rele_time){ /*subtraction not possible, erroneous state*/
-                              continue;
-                          }
-                          new_release_t = rele_time - shift_time_val;
-                          if((new_release_t < time_now)){
-                              continue;
-                          }
-                          sch_mem_pool.sc_mem_array[pos].release_time = new_release_t;
-                          continue;
-                      }
-                      /*then add it to release time*/
-                        new_release_t = rele_time + ushift_time;
-                      if( new_release_t <= MAX_RELEASE_TIME ){ /*too far to execute, we will not exist until then*/
-                          sch_mem_pool.sc_mem_array[pos].release_time = new_release_t;
-                          return SATR_OK;
-                      }
-                      break;
-                  }
-            }
+              time_shift_packet_at_position(pos, time_now, ushift_time);
+           }
         }
       return SATR_OK;
   }
@@ -427,33 +446,7 @@
       for (uint8_t pos = 0; pos < SC_MAX_STORED_SCHEDULES; pos++) {
           if (sch_mem_pool.sc_mem_array[pos].sch_id == id &&
               sch_mem_pool.sc_mem_array[pos].enabled == true ){
-              switch(sch_mem_pool.sc_mem_array[pos].sch_evt){
-                  case RELATIVE:
-                  case ABSOLUTE:
-                      uint32_t rele_time = sch_mem_pool.sc_mem_array[pos].release_time;
-                      uint8_t neg = (ushift_time >> 31) & 0x1;
-                      uint32_t shift_time_val = (~ushift_time)+ 1;
-                      uint32_t new_release_t = 0;
-                      if(neg){ /*then subtract it from release time*/
-                          if(shift_time_val >= rele_time){ /*subtraction not possible, erroneous state*/
-                              return SATR_ERROR;
-                          }
-                          new_release_t = rele_time - shift_time_val;
-                          if((new_release_t < time_now)){
-                              return SATR_ERROR;
-                          }
-                          sch_mem_pool.sc_mem_array[pos].release_time = new_release_t;
-                          return SATR_OK;
-                      }
-                      /*then add it to release time*/
-                      new_release_t = rele_time + ushift_time;
-                      if( new_release_t <= MAX_RELEASE_TIME ){ /*to far to execute, we will not exist until then*/
-                          sch_mem_pool.sc_mem_array[pos].release_time = new_release_t;
-                          return SATR_OK;
-                      }
-                      return SATR_ERROR;
-                      break;
-              }
+              return time_shift_packet_at_position(pos, time_now, ushift_time);
           }
       }
       return SATR_ERROR; /*schedule not found*/

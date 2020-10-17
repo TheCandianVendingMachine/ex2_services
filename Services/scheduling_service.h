@@ -142,6 +142,8 @@
   SAT_returnState scheduling_copy_inner_tc(const uint8_t *buf, csp_packet_t *pkt, const uint16_t size);
 
   /* Time Shifting */
+  SAT_returnState time_shift_packet_at_position(int pos, uint32_t time_now, uint32_t ushift_time);
+
   SAT_returnState scheduling_time_shift_all(uint8_t *time_v);
 
   SAT_returnState scheduling_time_shift_sel(uint8_t *data_v);
