@@ -357,12 +357,15 @@
 
     /**
     * @brief
-    * 		Time shift all currently active schedules
+    * 		Time shift packet at position in pool
     * @details
-    * 		Add/subtract the execution time
-    *     TODO: Fix get_time()
-    * @param time_v
-    * 		Pointer to time value to be added/subtracted
+    * 		Add/subtract the execution time from specific packet
+    * @param pos
+    * 		Position of packet within memory pool
+    * @param time_now
+    * 		Time right now
+    * @param ushift_time
+    * 		Time to shift by
     * @return
     * 		The execution state
     */
