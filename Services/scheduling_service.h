@@ -151,7 +151,7 @@
   /* Creating reports */
   SAT_returnState scheduling_service_report_summary(csp_packet_t *pkt, TC_TM_app_id dest_id);
 
-  SAT_returnState scheduling_service_report_detailed(csp_packet_t *pkt, TC_TM_app_id dest_id, uint8_t apid, uint8_t seqcnt);
+  SAT_returnState scheduling_service_report_detailed(csp_packet_t *pkt, TC_TM_app_id dest_id, uint16_t sch_id);
 
   SAT_returnState scheduling_service_crt_pkt_TM(csp_packet_t *pkt, uint8_t sid, TC_TM_app_id dest_app_id );
 

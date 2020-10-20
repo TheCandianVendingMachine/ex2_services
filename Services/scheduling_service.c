@@ -478,7 +478,7 @@
           base+=1;
           pkt->data[base] = sch_mem_pool.sc_mem_array[i].enabled;
           base+=1;
-          pkt->data[base] = sch_mem_pool.sc_mem_array[i].sch_id
+          pkt->data[base] = sch_mem_pool.sc_mem_array[i].sch_id;
           base+=1;
           pkt->data[base] = sch_mem_pool.sc_mem_array[i].sch_evt;
           base+=1;
@@ -514,7 +514,7 @@
               base+=1;
               pkt->data[base] = sch_mem_pool.sc_mem_array[i].enabled;
               base+=1;
-              pkt->data[base] = sch_mem_pool.sc_mem_array[i].sch_id
+              pkt->data[base] = sch_mem_pool.sc_mem_array[i].sch_id;
               base+=1;
               pkt->data[base] = sch_mem_pool.sc_mem_array[i].sch_evt;
               base+=1;
@@ -522,14 +522,14 @@
               base+=4;
               cnv16_8(sch_mem_pool.sc_mem_array[i].tc_pck->length, &pkt->data[base]);
               base+=2;
-              cnv32_8(sch_mem_pool.sc_mem_array[i].tc_pck->id, &pkt->data[base]);
+              cnv32_8(sch_mem_pool.sc_mem_array[i].tc_pck->id.ext, &pkt->data[base]);
               base+=4;
-              for(uint16_t p=0;p<sch_mem_pool.sc_mem_array[i].tc_pck->len;p++){
+              for(uint16_t p=0;p<sch_mem_pool.sc_mem_array[i].tc_pck->length;p++){
                   pkt->data[base] = sch_mem_pool.sc_mem_array[i].tc_pck->data[p];
                   base+=1;
               }
               base+=1;
-              pkt->len = base;
+              //pkt->len = base;
               break;
           }
       }
@@ -552,8 +552,8 @@
    */
   SAT_returnState scheduling_service_crt_pkt_TM(csp_packet_t *pkt, uint8_t sid, TC_TM_app_id dest_app_id ){
 
-      crt_pkt(pkt, SYSTEM_APP_ID, TM, TC_ACK_NO, TC_SCHEDULING_SERVICE, sid, dest_app_id);
-      pkt->len = 0;
+      //crt_pkt(pkt, SYSTEM_APP_ID, TM, TC_ACK_NO, TC_SCHEDULING_SERVICE, sid, dest_app_id);
+      //pkt->len = 0;
       return SATR_OK;
   }
 
