@@ -18,6 +18,8 @@
   */
 
   #include "scheduling_service.h"
+  #include <fcntl.h>
+  #include <sys/stat.h>
 
   uint8_t sche_tc_buffer[MAX_PKT_LEN+14+1]; // Arbitrary size
   Scheduling_service_state sc_s_state;
@@ -590,7 +592,7 @@
               cnv32_8(sch_mem_pool.sc_mem_array[s].release_time,&sche_tc_buffer[f_s]); //11
               f_s+=4;
               /*TC parsing begins here*/
-              cnv32_8(sch_mem_pool.sc_mem_array[s].tc_pck->id, sche_tc_buffer[f_s]);
+              cnv32_8(sch_mem_pool.sc_mem_array[s].tc_pck->id.ext, sche_tc_buffer[f_s]);
               f_s+=4;
               /*copy tc payload data*/
               uint16_t i = 0;
